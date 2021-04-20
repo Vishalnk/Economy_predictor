@@ -1,51 +1,40 @@
 package economypredictor;
-
 import java.io.*;
-
 import production.*;
 import java.util.Scanner;
-																				//administration class
+																							//administration class
 abstract class administration{
-	abstract void custom();								//abstract method
-	double bs,da,hra,tax,months,gs,grosssalary,netsalary;
+	abstract void custom();																	//abstract method
+	double basic_salary,da,hra,tax,months,grosssalary,netsalary,salary_for_1_month;
 	protected double salaryadministrartion;
-	public int a;										//constructor
+	public int no_of_emp_admin;																//constructor
 	administration(){
-		bs=13439;
-		da=bs*0.4;
-		hra=bs*0.2;
+		basic_salary=18439;
+		da=basic_salary*0.4;
+		hra=basic_salary*0.2;
 		months=12.0;
+		salary_for_1_month=basic_salary+da+hra;
+		grosssalary=salary_for_1_month*months;
 		}
-	void admin()throws InterruptedException{			//method overriding
+	
+	void admin()/*throws InterruptedException*/{											//method overriding
+		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
-		System.out.println("***********************");
-		System.out.println("Welcome to Administration Department");
 		do{
 		System.out.println("Enter the number of employees for Administration Dept ");
-		a=sc.nextInt();
+		no_of_emp_admin=sc.nextInt();
 		try{
-			if(a==0)
+			if(no_of_emp_admin==0)
 				throw new MyException("You have entered 0 which is invalid");
 			else{
-				if(grosssalary>300000&&grosssalary<5500000){
-					tax=0.3*gs;
-					 netsalary=gs-tax;
-					System.out.println("Tax amount : "+tax);
-					System.out.println("Net salary for one employee: "+netsalary);
-					salaryadministrartion=a*netsalary;
-					System.out.println("Total salary for "+a+"is : "+salaryadministrartion);
-					}
-						else{
-							System.out.println("No tax deducted for employees");
-							salaryadministrartion=a*gs;
-							System.out.println("Total salary for "+a+"is : "+salaryadministrartion);
-							}
-				}
-			}	
+				salaryadministrartion=Salarycalculate.salarycalculator( basic_salary, no_of_emp_admin, da, hra, months, salary_for_1_month,grosssalary);
+				System.out.println("Total salary for "+no_of_emp_admin +" is"+salaryadministrartion);
+			}
+		}
 				catch (MyException e) {
 					System.out.println("There was an issue");
 					try {
-						Thread.sleep(5000);
+						Thread.sleep(2000);
 					} catch (InterruptedException e1) {
 							e1.printStackTrace();
 					}
@@ -56,7 +45,7 @@ abstract class administration{
 						System.out.println(e);	
 						
 						}
-		}while(a==0);
+		}while(no_of_emp_admin==0);
 	}
 }
 
@@ -66,56 +55,82 @@ class customerservice extends administration{
 	double da=bs*0.4;
 	double hra=bs*0.2;
 	double months=12.0;
-	public double tax,gs,grosssalary,netsalary,salarycustom,salaryadministrartion;
-	int a;
-	void admin() {									//method overriding
+	public double tax,gs,grosssalary,netsalary,salarycustom,salaryadministrartion,salary_choice;
+	int no_of_emp_admin,stop1=0,stop2=0;
+	void admin() {																				//method overriding
+		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
+		System.out.println();
 		System.out.println("***********************");
-		System.out.println("Welcome to Administration Department");
+		conn:
 		do{
-		System.out.println("Enter the number of employees");
-		a=sc.nextInt();
-		try{
-			if(a==0)
-				throw new MyException("You have entered 0 which is invalid");
-			else{
-				salaryadministrartion=Salarycalculate.salarycalculator(bs, a);
-				System.out.println("Total salary for "+a+" employees is "+salaryadministrartion);
-				}
-			}	
-				catch (MyException e) {
-					System.out.println("There was an issue");
-					try {
-						Thread.sleep(2000);
-					} catch (InterruptedException e1) {
-						e1.printStackTrace();
-					}
-					System.out.println(e.getMessage());
-					System.out.println();
-					}
-					catch (Exception e) {
-						System.out.println(e);	
-						
+		System.out.println("Welcome to Administration Department");
+		System.out.println("Enter 1:To calculate salary based on incremented basic salary");
+		System.out.println("      2:To calculate salary based on normal basic salary");
+		salary_choice=sc.nextInt();
+		if(salary_choice==1){
+			super.admin();
+			stop1=-1;
+		}
+		else if(salary_choice==2){
+			do{
+				stop1=-1;
+				System.out.println("Enter the number of employees");
+				no_of_emp_admin=sc.nextInt();
+				try{
+					if(no_of_emp_admin==0)
+						throw new MyException("You have entered 0 which is invalid");
+					else{
+						stop2=-1;
+						salaryadministrartion=Salarycalculate.salarycalculator(bs, no_of_emp_admin);
+						System.out.println("No tax redemption");
+						System.out.println("Total salary for "+no_of_emp_admin+" employees is "+salaryadministrartion);
 						}
-		}while(a==0);
+					}	
+						catch (MyException e) {
+							System.out.println("There was an issue");
+							try {
+								Thread.sleep(2000);
+							} catch (InterruptedException e1) {
+								e1.printStackTrace();
+							}
+							System.out.println(e.getMessage());
+							System.out.println();
+							}
+							catch (Exception e) {
+								System.out.println(e);	
+								
+								}
+				}while(stop2==0);
+		}
+		else {
+			System.out.println("ERROR");
+			continue conn;
+		}
+	}while(stop1==0);
+		
 	}
-																		
-	void custom(){														
+	
+																							//administration method
+																							//customer service method
+	void custom(){																			//abstract definition
 		double bs=10000;
-		int b;
+		int no_of_emp_cs;
+		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
+		System.out.println();
 		System.out.println("***********************");
 		System.out.println("Welcome to Customer Service Department");
 		do{
 		System.out.println("Enter the number of employees for Customer Service Dept ");
-		b=sc.nextInt();
+		no_of_emp_cs=sc.nextInt();
 		try{
-			if(b==0)
+			if(no_of_emp_cs==0)
 				throw new MyException("You have entered 0 which is invalid");
 				
 			else{
-				salarycustom=Salarycalculate.salarycalculator(bs, b);
-				System.out.println("Total salary for "+a+"employees is"+salarycustom);
+				salarycustom=Salarycalculate.salarycalculator(bs, no_of_emp_cs);
+				System.out.println("Total salary for "+no_of_emp_cs+"employees is"+salarycustom);
 				}
 			}	
 				catch (MyException e) {
@@ -132,7 +147,7 @@ class customerservice extends administration{
 						System.out.println(e);	
 						
 			}
-		}while(b==0);
+		}while(no_of_emp_cs==0);
 		
 		}
 	
@@ -144,6 +159,7 @@ void calculate(){
 
 
 }
+@SuppressWarnings("serial")
 class MyException extends Exception {
 MyException(String message) {
 super(message);}
@@ -152,11 +168,13 @@ super(message);}
 
 
 public class Economy {
-	public static void main(String[] arg) throws Exception{
-		int x,y;
+	@SuppressWarnings("resource")
+	public static void main(String[] args) throws IOException {
+		int choice_1=0,choice_2=0;
 	int pc;
 	customerservice cs=new customerservice();
-	 Sale p=new Sale();
+	 Sale sale=new Sale();
+	 conn:
 	do{
 	System.out.println("***************Introducing you the Economy Predictor***************");
 	System.out.println("This application will help you to analyse the profit and loss of a company");
@@ -166,31 +184,42 @@ public class Economy {
 	System.out.println("3. PRODUCT REVIEW");
 	System.out.println("**NOTE:If you want to view the details of budget and sale then login as admin");
 	Scanner choice =new Scanner(System.in);
-	x=choice.nextInt();
-	switch(x){
+	try{
+		choice_1=choice.nextInt();
+	}
+	catch(Exception e){
+		System.out.println("*Please enter a valid number*");
+		continue conn;
+	}
+	switch(choice_1){
 				case 1:System.out.println("Enter your company name");
 						BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 						String scc=br.readLine();
 						System.out.println("Welcome "+scc+" pvt limited");
 						cs.admin();
 						 cs.custom();
-						// sa.start();
-						 p.products();
-						 p.salaryproduction();
-						 p.salarysales();
-						 p.exports();
+						 sale.products();
+						 sale.salaryproduction();
+						 sale.salarysales();
+						 sale.exports();
 						 break;
 				case 2:
 						System.out.println("Enter your password");
 						pc=choice.nextInt();
-						if(pc==1234){
-							cs.calculate();
-							 p.calculate1();
-							 p.display();
-							 
+						if(sale.product_1==null||sale.product_2==null){
+							System.out.println("No production of products has started");
 						}
-						else
-							System.out.println("Wrong username or password");
+						else{
+							if(pc==1234){
+								cs.calculate();
+								sale.calculate_main(cs.salaryadministrartion,cs.salarycustom);
+								sale.display();
+								 
+							}
+							else
+								System.out.println("Wrong username or password");
+						}
+						
 						break;
 						
 				case 3:System.out.println("Enter review about the product quality");
@@ -252,10 +281,11 @@ public class Economy {
 							break;
 							
 				default: 	System.out.println("Invalid option!!Try again");
-							break;
+							continue conn;
+						
 	}	System.out.println("Do you want to continue?  1.yes or 2.no");
-	 y=choice.nextInt();
-	}while(y!=2);
+	 choice_2=choice.nextInt();
+	}while(choice_2!=2);
 		
 	}
 }
